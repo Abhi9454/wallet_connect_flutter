@@ -1,7 +1,7 @@
-package com.example.myapplication
+package com.example.wallet_connect_flutter
 
 import androidx.multidex.MultiDexApplication
-import com.example.myapplication.server.BridgeServer
+import com.example.wallet_connect_flutter.server.BridgeServer
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import org.komputing.khex.extensions.toNoPrefixHexString

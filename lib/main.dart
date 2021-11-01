@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -47,12 +49,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const platform = const MethodChannel('com.example.flutter/device_info');
+  static const platform = const MethodChannel('com.accubits.flutter/wallet_connect_info');
 
-  String deviceInfo = "";
+  String walletHash = "";
 
-  Future<void> _getDeviceInfo() async {
-    await platform.invokeMethod('getDeviceInfo');
+  Future<void> _connectToWallet() async {
+    try {
+      await platform.invokeMethod('connectToWallet');
+    } catch (e){
+      log('Something went wrong.'+ e.toString());
+    }
   }
 
 
@@ -63,19 +69,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _getAccounts() async {
-    final List<Object?> result = await platform.invokeMethod('getAccounts');
-    setState(() {
-      deviceInfo = result.first.toString();
-    });
-    print(deviceInfo);
+    try {
+      final List<Object?> result = await platform.invokeMethod('getAccounts');
+      setState(() {
+        walletHash = result.first.toString();
+      });
+      print(walletHash);
+    } catch(e){
+
+      log('No account Found. Try connecting the wallet application first.'+ e.toString());
+    }
   }
 
   Future<void> _sendTransaction() async {
-    final List<Object?> result = await platform.invokeMethod('sendTransaction');
-    setState(() {
-      deviceInfo = result.first.toString();
-    });
-    print(deviceInfo);
+    try {
+      final List<Object?> result = await platform.invokeMethod(
+          'sendTransaction');
+      setState(() {
+        walletHash = result.first.toString();
+      });
+      print(walletHash);
+    } catch(e){
+      log('Error Sending Transaction.'+ e.toString());
+    }
   }
 
 
@@ -113,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _getDeviceInfo();
+          _connectToWallet();
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),

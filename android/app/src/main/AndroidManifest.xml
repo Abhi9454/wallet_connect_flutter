@@ -2,7 +2,7 @@
     package="com.example.wallet_connect_flutter">
 
     <application
-        android:name="com.example.myapplication.ExampleApplication"
+        android:name="com.example.wallet_connect_flutter.ExampleApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="wallet_connect_flutter"
         android:networkSecurityConfig="@xml/network_config">

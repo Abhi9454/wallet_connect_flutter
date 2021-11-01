@@ -1,4 +1,4 @@
-package com.example.myapplication.server
+package com.example.wallet_connect_flutter.server
 
 import android.util.Log
 import com.squareup.moshi.Moshi

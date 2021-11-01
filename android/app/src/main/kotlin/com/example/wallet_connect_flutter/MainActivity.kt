@@ -7,7 +7,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.multidex.MultiDexApplication
-import com.example.myapplication.ExampleApplication
+import com.example.wallet_connect_flutter.ExampleApplication
 import org.walletconnect.Session
 
 import io.flutter.embedding.android.FlutterActivity
@@ -19,7 +19,7 @@ class MainActivity: FlutterActivity() , Session.Callback {
 
 
     private var txRequest: Long? = null
-    private val CHANNEL = "com.example.flutter/device_info"
+    private val CHANNEL = "com.accubits.flutter/wallet_connect_info"
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -27,7 +27,7 @@ class MainActivity: FlutterActivity() , Session.Callback {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
             // Note: this method is invoked on the main thread.
                 call, result ->
-            if (call.method == "getDeviceInfo") {
+            if (call.method == "connectToWallet") {
                 initialSetup()
                 ExampleApplication.resetSession()
                 ExampleApplication.session.addCallback(this)
