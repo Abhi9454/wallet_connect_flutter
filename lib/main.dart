@@ -48,7 +48,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   static const platform = const MethodChannel('com.accubits.flutter/wallet_connect_info');
 
   String walletHash = "";
@@ -62,11 +62,41 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
+  Future<String?> _notify() async {
+    try {
+      platform.setMethodCallHandler((call){
+        var methodCall;
+        methodCall = call.method;
+        print(call.method);
+        return methodCall;
+      });
+    } catch (e){
+      log('Something went wrong.'+ e.toString());
+    }
+    return null;
+  }
+
+
+
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
   }
+
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print('AppLifecycleState: $state');
+    _getAccounts();
+  }
+
+
+
+
 
   Future<void> _getAccounts() async {
     try {
@@ -76,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
       print(walletHash);
     } catch(e){
-
       log('No account Found. Try connecting the wallet application first.'+ e.toString());
     }
   }
@@ -100,7 +129,17 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
+
   }
+
+
+
+  @override
+  void didUpdateWidget(MyHomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("called");
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('Get Account Address'),
             ),
+            Text('Wallet Address is $walletHash'),
             SizedBox(height: 10,),
             ElevatedButton(
               onPressed: () {

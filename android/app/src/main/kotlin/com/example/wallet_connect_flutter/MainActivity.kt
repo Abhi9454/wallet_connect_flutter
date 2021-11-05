@@ -15,6 +15,8 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import org.walletconnect.nullOnThrow
 
+
+
 class MainActivity: FlutterActivity() , Session.Callback {
 
 
@@ -23,16 +25,29 @@ class MainActivity: FlutterActivity() , Session.Callback {
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
             // Note: this method is invoked on the main thread.
                 call, result ->
             if (call.method == "connectToWallet") {
-                initialSetup()
-                ExampleApplication.resetSession()
-                ExampleApplication.session.addCallback(this)
+                try {
+                    Log.d("#####", "in try block")
+                    result.success(ExampleApplication.session.approvedAccounts())
+                } catch (e: UninitializedPropertyAccessException) {
+                    initialSetup()
+                    ExampleApplication.resetSession()
+                    ExampleApplication.session.addCallback(this)
+                } finally {
+                    Log.d("#####", "in finally block")
+                }
             } else if(call.method == "getAccounts") {
-                result.success(ExampleApplication.session.approvedAccounts())
+                try {
+                    Log.d("#####", "in try block")
+                    result.success(ExampleApplication.session.approvedAccounts())
+                } catch (e: UninitializedPropertyAccessException) {
+                    result.success("")
+                } finally {
+                    Log.d("#####", "in finally block")
+                }
             }
             else if(call.method == "sendTransaction") {
                 val from = ExampleApplication.session.approvedAccounts()?.first()
@@ -57,7 +72,6 @@ class MainActivity: FlutterActivity() , Session.Callback {
             else {
                 result.notImplemented()
             }
-
         }
     }
 
@@ -112,5 +126,6 @@ class MainActivity: FlutterActivity() , Session.Callback {
         session.addCallback(this)
         sessionApproved()
     }
+
 
 }
