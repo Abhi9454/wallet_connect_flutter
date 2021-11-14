@@ -26,8 +26,9 @@ class MainActivity: FlutterActivity() , Session.Callback {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler {
+
             // Note: this method is invoked on the main thread.
-                call, result ->
+            call, result ->
             if (call.method == "connectToWallet") {
                 try {
                     Log.d("#####", "in try block")
@@ -44,6 +45,7 @@ class MainActivity: FlutterActivity() , Session.Callback {
                     Log.d("#####", "in try block")
                     result.success(ExampleApplication.session.approvedAccounts())
                 } catch (e: UninitializedPropertyAccessException) {
+
                     result.success("")
                 } finally {
                     Log.d("#####", "in finally block")
@@ -51,20 +53,20 @@ class MainActivity: FlutterActivity() , Session.Callback {
             }
             else if(call.method == "sendTransaction") {
                 val from = ExampleApplication.session.approvedAccounts()?.first()
-                    ?: return@setMethodCallHandler
+                        ?: return@setMethodCallHandler
                 val txRequest = System.currentTimeMillis()
                 ExampleApplication.session.performMethodCall(
-                    Session.MethodCall.SendTransaction(
-                        txRequest,
-                        from,
-                        "0x24EdA4f7d0c466cc60302b9b5e9275544E5ba552",
-                        null,
-                        null,
-                        null,
-                        "0x5AF3107A4000",
-                        ""
-                    ),
-                    ::handleResponse
+                        Session.MethodCall.SendTransaction(
+                                txRequest,
+                                from,
+                                "0x24EdA4f7d0c466cc60302b9b5e9275544E5ba552",
+                                null,
+                                null,
+                                null,
+                                "0x5AF3107A4000",
+                                ""
+                        ),
+                        ::handleResponse
                 )
                 this.txRequest = txRequest
                 navigateToWallet()
@@ -73,6 +75,11 @@ class MainActivity: FlutterActivity() , Session.Callback {
                 result.notImplemented()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initialSetup()
     }
 
     private fun requestConnectionToWallet() {
@@ -125,6 +132,11 @@ class MainActivity: FlutterActivity() , Session.Callback {
         val session = nullOnThrow { ExampleApplication.session } ?: return
         session.addCallback(this)
         sessionApproved()
+    }
+
+    override fun onDestroy() {
+        ExampleApplication.session.removeCallback(this)
+        super.onDestroy()
     }
 
 

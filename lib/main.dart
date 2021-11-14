@@ -62,21 +62,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   }
 
 
-  Future<String?> _notify() async {
-    try {
-      platform.setMethodCallHandler((call){
-        var methodCall;
-        methodCall = call.method;
-        print(call.method);
-        return methodCall;
-      });
-    } catch (e){
-      log('Something went wrong.'+ e.toString());
-    }
-    return null;
-  }
-
-
 
 
   @override
@@ -93,7 +78,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     print('AppLifecycleState: $state');
     _getAccounts();
   }
-
 
 
 

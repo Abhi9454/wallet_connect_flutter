@@ -11,6 +11,7 @@ import org.walletconnect.nullOnThrow
 import java.io.File
 import java.util.*
 
+
 class ExampleApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
@@ -23,6 +24,7 @@ class ExampleApplication : MultiDexApplication() {
     private fun initClient() {
         client = OkHttpClient.Builder().build()
     }
+
 
     private fun initMoshi() {
         moshi = Moshi.Builder().build()
@@ -54,7 +56,7 @@ class ExampleApplication : MultiDexApplication() {
                 MoshiPayloadAdapter(moshi),
                 storage,
                 OkHttpTransport.Builder(client, moshi),
-                Session.PeerMeta(name = "Example App")
+                Session.PeerMeta(name = "Wallet Connect App")
             )
             session.offer()
         }
