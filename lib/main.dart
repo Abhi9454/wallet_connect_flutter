@@ -66,7 +66,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
   }
@@ -110,7 +109,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies()  async {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
 
