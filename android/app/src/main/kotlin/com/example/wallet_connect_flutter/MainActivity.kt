@@ -31,21 +31,19 @@ class MainActivity: FlutterActivity() , Session.Callback {
             call, result ->
             if (call.method == "connectToWallet") {
                 try {
-                    Log.d("#####", "in try block")
-                    result.success(ExampleApplication.session.approvedAccounts())
-                } catch (e: UninitializedPropertyAccessException) {
                     initialSetup()
                     ExampleApplication.resetSession()
                     ExampleApplication.session.addCallback(this)
+                } catch (e: UninitializedPropertyAccessException) {
+                    Log.d("#####", "in connect wallet catch block")
                 } finally {
-                    Log.d("#####", "in finally block")
+                    Log.d("#####", "in finally block 01")
                 }
             } else if(call.method == "getAccounts") {
                 try {
                     Log.d("#####", "in try block")
                     result.success(ExampleApplication.session.approvedAccounts())
                 } catch (e: UninitializedPropertyAccessException) {
-
                     result.success("")
                 } finally {
                     Log.d("#####", "in finally block")
@@ -83,9 +81,14 @@ class MainActivity: FlutterActivity() , Session.Callback {
     }
 
     private fun requestConnectionToWallet() {
-        val i = Intent(Intent.ACTION_VIEW)
-        i.data = Uri.parse(ExampleApplication.config.toWCUri())
-        startActivity(i)
+        try {
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(ExampleApplication.config.toWCUri())
+            startActivity(i)
+        } catch ( e : Exception){
+            Log.d("#####", "unable to launch activity")
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=io.metamask")))
+        }
     }
 
     private fun navigateToWallet() {
