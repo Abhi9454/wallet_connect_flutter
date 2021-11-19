@@ -53,6 +53,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   String walletHash = "";
 
+  bool _loader = false;
+
   Future<void> _connectToWallet() async {
     try {
       await platform.invokeMethod('connectToWallet');
@@ -84,9 +86,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Future<void> _getAccounts() async {
     try {
       final List<Object?> result = await platform.invokeMethod('getAccounts');
-      setState(() {
-        walletHash = result.first.toString();
-      });
+      if(result.first.toString().isNotEmpty) {
+        setState(() {
+          walletHash = result.first.toString();
+          _loader = false;
+        });
+      }
       print(walletHash);
     } catch(e){
       log('No account Found. Try connecting the wallet application first.'+ e.toString());
@@ -145,16 +150,18 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 _sendTransaction();
               },
               child: Text('Send Transaction'),
-            )
+            ),
+            _loader ? SizedBox(height: 50, width: 50 ,child: CircularProgressIndicator() ,) : walletHash.isEmpty ? ElevatedButton(
+              onPressed: () {
+                _connectToWallet();
+                setState(() {
+                  _loader = true;
+                });
+              },
+              child: Text('Connect to Wallet'),
+            ) : SizedBox()
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _connectToWallet();
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
